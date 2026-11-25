@@ -174,7 +174,7 @@ function resolve(raw){
     var tg=c[hi],d2=dupT(tg);
     return {k:d2?'err':'pick',target:tg,cands:c,hi:hi,t:d2||(c.length===1?'找到 1 位,按 Enter 登錄':'找到 '+c.length+' 位,用 ↑↓ 選擇後按 Enter')};
   }
-  if(validId(id)){var d3=dupT({id:id});return d3?{k:'err',t:d3}:{k:'warn',target:{id:id},t:'名冊裡沒有 '+id+',仍可登錄(會再確認一次)'}}
+  if(validId(id)){var d3=dupT({id:id});return d3?{k:'err',t:d3}:{k:'ok',target:{id:id},t:'名冊裡沒有 '+id+'(可能是新人),可以直接登錄'}}
   return {k:'idle',t:'名冊裡找不到「'+String(raw).trim()+'」'};
 }
 function selectPrize(k){sel=k;pending=null;persistUI();focusSel='#idin';render()}
@@ -185,7 +185,6 @@ function register(force,pickId){
   var r=pickId?resolve(pickId):resolve(idDraft),p=pz(sel);
   if(r.k==='idle'||r.k==='err'){showToast({k:'err',t:r.k==='idle'&&!normId(idDraft)?'請輸入員編、姓名或部門':r.t});focusSel='#idin';render();return}
   var id=r.target.id,reasons=[];
-  if(r.k==='warn')reasons.push('名冊裡沒有 '+id+'。');
   var cnt=countP(sel);if(cnt>=p.quota)reasons.push(p.name+'已登錄 '+cnt+' 名,已達名額 '+p.quota+' 名。');
   if(reasons.length&&!force){pending={id:id,pick:pickId,t:reasons.join(' ')+'確定還要登錄嗎?'};render();return}
   busy=true;pending=null;touch();refreshEntryState();
