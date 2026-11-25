@@ -413,7 +413,7 @@ function csvCell(v){v=String(v==null?'':v);return /[",\r\n]/.test(v)?'"'+v.repla
 function exportCsv(){
   var W=data().winners,lines=['序號,員工編號,姓名,部門,獎項,金額,登錄時間'];
   W.forEach(function(w,i){var p=pz(w.p),pp=person(w.id)||{},d=new Date(w.t);lines.push([i+1,w.id,pp.name||'',pp.dept||'',p.name,p.amount,d.toLocaleString('zh-TW',{hour12:false})].map(csvCell).join(','))});
-  var name=(data().eventName||'摸彩')+'_中獎名單.csv';
+  var name=(data().eventName.replace(/\s+/g,'')||'摸彩')+'_中獎名單.csv';
   downloadsNS.save({filename:name,data:new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv'})}).then(function(){showToast({k:'info',t:'已匯出 '+name});refreshToast()},function(e){if(!(e&&e.code==='declined')){showToast({k:'err',t:'無法在這個畫面匯出檔案'});refreshToast()}});
 }
 function listCard(){
@@ -578,7 +578,7 @@ function saveSetting(k,v){
 function setInput(k,props){
   var d=data();
   return Object.assign({value:pick(setDraft,k,d[k]),oninput:function(e){setDraft[k]=e.target.value;touch()},
-    onchange:function(e){var v=e.target.value.trim();if(v===d[k]){delete setDraft[k];return}setDraft[k]=e.target.value;saveSetting(k,v)}},props);
+    onchange:function(e){var v=e.target.value.replace(/\r\n?/g,'\n').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();if(v===d[k]){delete setDraft[k];return}setDraft[k]=e.target.value;saveSetting(k,v)}},props);
 }
 function qrModules(url){var qr=qrcode(0,'M');qr.addData(url);qr.make();return {n:qr.getModuleCount(),dark:function(r,c){return qr.isDark(r,c)}}}
 function validUrl(u){return /^https?:\/\/\S+$/i.test(u||'')}
@@ -609,7 +609,7 @@ function settingsView(){
   return h('div',{class:'sgrid'},
     h('div',{class:'col'},h('section',{class:'card stack'},
       h('h2',{text:'活動設定'}),
-      h('div',{class:'field'},h('label',{class:'lbl',for:'sname',text:'活動名稱'}),h('input',setInput('eventName',{id:'sname',type:'text'}))),
+      h('div',{class:'field'},h('label',{class:'lbl',for:'sname',text:'活動名稱'}),h('textarea',setInput('eventName',{id:'sname',class:'ename',rows:'2'})),h('p',{class:'hint',text:'按 Enter 可以換行,員工頁的大標會照這裡的換行顯示。'})),
       h('div',{class:'field'},h('label',{class:'lbl',for:'snote',text:'領獎說明(中獎時顯示給員工)'}),h('textarea',setInput('claimNote',{id:'snote'}))),
       h('div',{class:'field'},h('span',{class:'lbl',text:'名單狀態'}),
         h('div',{class:'seg'},

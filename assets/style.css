@@ -264,3 +264,7 @@ a.btn{text-decoration:none}
 .wipe-link:hover{color:var(--muted)}
 .wipe-link:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .wipe-confirm{flex:1;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;border:var(--line);background:var(--err-bg);font-weight:900;font-size:14px}
+
+/* event name may contain line breaks chosen by staff */
+.ehero h1.big,.atop h1{white-space:pre-line}
+textarea.ename{min-height:76px;font-family:var(--f-body);font-weight:700;resize:vertical}
