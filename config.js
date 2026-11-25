@@ -3,5 +3,5 @@
    真正的權限由資料庫的 RLS 規則控管。千萬不要把 Secret key(sb_secret_ 開頭)放進來。 */
 window.RAFFLE_CONFIG = {
   SUPABASE_URL: 'https://zukdksmwbfpmcpriyule.supabase.co',
-  SUPABASE_ANON_KEY: '貼上 Publishable key'
+  SUPABASE_ANON_KEY: 'sb_publishable_9CHW1O-HnbyB8TGodA4sEQ_LvDLCw0Q'
 };
