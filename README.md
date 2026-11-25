@@ -14,7 +14,9 @@
 
 1. 到 <https://supabase.com> 註冊並按 **New project**。
    - Region 選 **Northeast Asia (Tokyo)** 或 **Southeast Asia (Singapore)**，離台灣近。
-   - 資料庫密碼自己記好（之後用不太到）。
+   - Project name 可以填 `endparty-2026`。
+   - Database password 按 **Generate a password**，複製存好（之後用不太到）。
+   - Data access：**Enable Data API** 要勾；另外兩項（Grant API access…、Enable RLS…）勾不勾都可以，`schema.sql` 會自己設定好。
 2. 專案建好後，左側選 **SQL Editor** → **New query**，把 `supabase/schema.sql` 整份貼上 → 按 **Run**。看到 `Success` 就完成。
 3. 關閉自由註冊（很重要，否則任何人都能自己註冊帳號）：
    左側 **Authentication** → **Sign In / Providers**（或 Settings）→ 把 **Allow new users to sign up** 關掉 → Save。

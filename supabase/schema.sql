@@ -40,6 +40,15 @@ create index if not exists winners_drawn_at_idx on public.winners (drawn_at);
 
 -- ============ 權限 ============
 
+-- 明確開放 API 存取(建專案時沒勾「Grant API access to new tables automatically」也能用);
+-- 誰能讀寫哪一列,仍由下面的 RLS 規則決定。
+grant usage on schema public to anon, authenticated;
+grant select on public.settings, public.winners to anon, authenticated;
+grant update on public.settings to authenticated;
+grant select, insert, update, delete on public.winners to authenticated;
+grant select, insert, update, delete on public.roster to authenticated;
+grant select on public.staff to authenticated;
+
 create or replace function public.is_staff() returns boolean
 language sql stable security definer set search_path = public as $$
   select exists (
@@ -47,6 +56,8 @@ language sql stable security definer set search_path = public as $$
     where email = lower(coalesce(auth.jwt() ->> 'email', ''))
   );
 $$;
+
+grant execute on function public.is_staff() to anon, authenticated;
 
 alter table public.settings enable row level security;
 alter table public.staff    enable row level security;
