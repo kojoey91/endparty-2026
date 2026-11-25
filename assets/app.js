@@ -427,7 +427,32 @@ function listCard(){
       h('div',{id:'lchips',class:'chips'},chip(0,'全部',W.length),chip(5,'五獎',countP(5)),chip(6,'六獎',countP(6))),
       h('input',{id:'lf',type:'text','aria-label':'篩選名單',placeholder:hasRoster()?'篩選員編、姓名或部門':'篩選員編,例如 A12',value:listFilter,spellcheck:'false',oninput:function(e){listFilter=e.target.value;renderList()}})),
     h('div',{id:'lbody',class:'list'},listRows()),
-    h('p',{class:'hint',style:'margin-top:10px',text:'所有工作人員看到同一份即時名單。最新的在最上面;別人登錄的也會亮一下。'}));
+    h('p',{class:'hint',style:'margin-top:10px',text:'所有工作人員看到同一份即時名單。最新的在最上面;別人登錄的也會亮一下。'}),
+    W.length?h('div',{id:'wipe',class:'wipe'},wipeNode()):null);
+}
+/* quiet "clear all" for test runs: a faint text link, then an explicit second confirmation */
+var wipeArm=false,wipeBusy=false;
+function wipeNode(){
+  var n=data().winners.length;
+  if(!wipeArm)return h('button',{type:'button',class:'wipe-link',onclick:function(){wipeArm=true;refreshWipe()},text:'清空全部(測試用)'});
+  return h('div',{class:'wipe-confirm',role:'alert'},
+    h('span',{text:'確定刪除全部 '+n+' 筆中獎紀錄?刪除後無法復原。'}),
+    h('span',{class:'row nowrap'},
+      h('button',{type:'button',class:'btn small danger',disabled:wipeBusy,onclick:wipeAll,text:wipeBusy?'刪除中…':'確定清空'}),
+      h('button',{type:'button',class:'btn small',disabled:wipeBusy,onclick:function(){wipeArm=false;refreshWipe()},text:'取消'})));
+}
+function refreshWipe(){var b=$('#wipe');if(b)b.replaceChildren(wipeNode())}
+function wipeAll(){
+  if(wipeBusy||!sb)return;wipeBusy=true;refreshWipe();touch();
+  sb.from('winners').delete().neq('emp_id','').then(function(r){
+    wipeBusy=false;wipeArm=false;
+    if(r.error){showToast({k:'err',t:'清空失敗:'+errText(r.error)})}
+    else{liveWinners=[];toast=null;showToast({k:'info',t:'已清空全部中獎紀錄'});refetchSoon('w')}
+    render();
+  },function(e){wipeBusy=false;showToast({k:'err',t:'清空失敗:'+errText(e)});render()});
+}
+function _listCardEnd(){
+  return null;
 }
 
 /* ---- roster import ---- */
