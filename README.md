@@ -29,9 +29,8 @@
      ('coworker@example.com')
    on conflict do nothing;
    ```
-6. 拿連線資料：左側 **Project Settings** → **API**，複製
-   - **Project URL**（像 `https://abcd1234.supabase.co`）
-   - **anon public** key（很長一串）
+6. 拿連線資料：左側 **Project Settings** → **API Keys**，複製 **Publishable key**（`sb_publishable_` 開頭）。
+   Project URL 就是 `https://<Project ID>.supabase.co`（Project ID 在 Project Settings → General）。
 
 ## 二、填設定檔
 
@@ -40,12 +39,12 @@
 ```js
 window.RAFFLE_CONFIG = {
   SUPABASE_URL: 'https://abcd1234.supabase.co',
-  SUPABASE_ANON_KEY: 'eyJhbGciOi...'
+  SUPABASE_ANON_KEY: 'sb_publishable_...'
 };
 ```
 
-> anon key 本來就是給網頁用的公開金鑰，放在公開 repo 沒問題；誰能讀、誰能寫由資料庫的規則（RLS）控管。
-> **絕對不要**把 `service_role` key 放進任何檔案。
+> Publishable key 本來就是給網頁用的公開金鑰，放在公開 repo 沒問題；誰能讀、誰能寫由資料庫的規則（RLS）控管。
+> **絕對不要**把 Secret key（`sb_secret_` 開頭）或舊的 `service_role` key 放進任何檔案。
 
 ## 三、發布到 GitHub Pages（約 5 分鐘）
 
